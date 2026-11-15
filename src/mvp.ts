@@ -185,7 +185,7 @@ function renderResult(result: Result): void {
   id('result-caption').textContent = `Latest result · ${names[result.fixture]}`;
   id('result-meta').hidden = false;
 
-  const heading = /^(?:#{1,6}\s+)?(?:\*\*)?(summary|likely cause|supporting (?:log )?evidence|uncertainty|(?:two )?(?:low[- ]cost )?(?:read[- ]only|non[- ]destructive) checks)(?:\s*\([^)]*\))?\s*:?(?:\*\*)?(?:\s*(.*))?$/i;
+  const heading = /^(?:(?:#{1,6}|[-*+])\s+)?(?:\*\*)?(summary|likely cause|supporting (?:log )?evidence|uncertainty|(?:two )?(?:low[- ]cost )?(?:read[- ]only|non[- ]destructive) checks)(?:\s*\([^)]*\))?\s*:?(?:\*\*)?\s*:?\s*(.*)$/i;
   const blocks: { title: string; lines: string[] }[] = [];
   let current = { title: 'Analysis', lines: [] as string[] };
   blocks.push(current);
