@@ -1,0 +1,6 @@
+import {InferenceMode as M, InferenceSource as S} from 'firebase/ai';
+import test from 'node:test';import assert from 'node:assert/strict';import {allowRun,assess,fixtures} from '../src/policy.mjs';
+test('cloud and fallback cannot run without consent',()=>{for(const mode of [M.ONLY_IN_CLOUD,M.PREFER_ON_DEVICE])assert.throws(()=>allowRun(mode,false));assert.doesNotThrow(()=>allowRun(M.ONLY_ON_DEVICE,false));});
+test('cloud output cannot pass as local evidence',()=>{assert.equal(assess(M.ONLY_ON_DEVICE,S.IN_CLOUD,'OK'),'SOURCE_MISMATCH');assert.equal(assess(M.ONLY_ON_DEVICE,undefined,'OK'),'UNPROVEN_SOURCE');assert.equal(assess(M.ONLY_ON_DEVICE,S.ON_DEVICE,''),'EMPTY_RESPONSE');assert.equal(assess(M.ONLY_ON_DEVICE,S.ON_DEVICE,'OK'),'PASS');});
+test('cloud source and hybrid source must be real SDK values',()=>{assert.equal(assess(M.ONLY_IN_CLOUD,S.ON_DEVICE,'OK'),'SOURCE_MISMATCH');assert.equal(assess(M.PREFER_ON_DEVICE,S.IN_CLOUD,'OK'),'PASS');assert.equal(assess(M.PREFER_ON_DEVICE,'fake','OK'),'UNPROVEN_SOURCE');});
+test('unknown mode fails closed; fixtures are synthetic',()=>{assert.throws(()=>allowRun('unknown',true));assert.equal(Object.keys(fixtures).length,3);for(const item of Object.values(fixtures))assert.match(item,/^SYNTHETIC/);});

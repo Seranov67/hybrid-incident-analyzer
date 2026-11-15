@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A read-only incident review workspace with on-device analysis and optional Firebase cloud fallback.">
+  <title>Hybrid Incident Analyzer</title>
+</head>
+<body>
+  <main class="workspace">
+    <header class="page-header">
+      <div>
+        <p class="kicker">Incident review</p>
+        <h1>Hybrid Incident Analyzer</h1>
+        <p class="intro">Turn a log excerpt into a working diagnosis, supporting evidence, and safe next checks.</p>
+      </div>
+      <div class="signals" aria-label="Runtime status">
+        <span class="signal" id="device-state" data-state="wait">Checking local model</span>
+        <span class="signal" id="network-state" data-state="wait">Checking network</span>
+      </div>
+    </header>
+    <div class="layout">
+      <section class="panel incident" aria-labelledby="incident-title">
+        <div class="section-head">
+          <div>
+            <h2 id="incident-title">Incident input</h2>
+            <p>Choose a synthetic incident to investigate.</p>
+          </div>
+          <span class="tag">Sample data</span>
+        </div>
+        <div id="scenarios" class="scenarios" role="group" aria-label="Synthetic incidents">
+          <button type="button" class="scenario" data-fixture="disk" aria-pressed="true"><span>Disk pressure</span><small>D-01</small></button>
+          <button type="button" class="scenario" data-fixture="dns" aria-pressed="false"><span>DNS timeout</span><small>N-01</small></button>
+          <button type="button" class="scenario" data-fixture="injection" aria-pressed="false"><span>Untrusted input</span><small>I-01</small></button>
+        </div>
+        <div class="log-panel">
+          <div class="log-label"><span>Event log</span><span id="event-count"></span></div>
+          <ol id="events" class="events" aria-label="Incident log lines"></ol>
+        </div>
+        <fieldset class="routing">
+          <legend>Inference route</legend>
+          <label class="route-option"><input type="radio" name="route" value="local" checked><span><strong>Device only</strong><small>Keep analysis on this device.</small></span></label>
+          <label class="route-option"><input type="radio" name="route" value="hybrid"><span><strong>Device first</strong><small>Allow cloud fallback if the local model cannot respond.</small></span></label>
+        </fieldset>
+        <label id="consent-row" class="consent" hidden><input id="cloud-consent" type="checkbox"><span>I allow this synthetic log to be sent to Firebase AI Logic if local inference falls back.</span></label>
+        <p id="run-status" class="run-status" role="status" aria-live="polite"></p>
+        <div class="actions">
+          <button id="run" class="primary" type="button" disabled>Analyze incident</button>
+          <button id="prepare" class="secondary" type="button" hidden>Prepare local model</button>
+        </div>
+      </section>
+      <section id="analysis-panel" class="panel analysis" aria-labelledby="analysis-title" aria-busy="false">
+        <div class="section-head">
+          <div><h2 id="analysis-title">Analysis</h2><p id="result-caption">Review the model's findings against the event log.</p></div>
+          <button id="export" class="secondary compact" type="button" disabled>Export JSON</button>
+        </div>
+        <div id="result-meta" class="result-meta" hidden>
+          <span class="signal" id="result-source"></span>
+          <span id="result-time"></span>
+          <span id="result-network"></span>
+        </div>
+        <div id="result" class="result" aria-live="polite">
+          <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+            <h3>No analysis yet</h3>
+            <p>Run an incident to see the likely cause, uncertainty, and next checks.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+    <footer class="footer"><span>Firebase AI Logic Hybrid Inference</span><span>Read-only analysis · Synthetic examples</span></footer>
+  </main>
+  <script type="module" src="/src/mvp.ts"></script>
+</body>
+</html>
